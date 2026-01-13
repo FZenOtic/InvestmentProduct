@@ -7,6 +7,9 @@ import Aura from '@primeuix/themes/aura'
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 
+// API configuration
+window.API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000'
+
 const app = createApp(App)
 app.use(router)
 app.use(PrimeVue, {
