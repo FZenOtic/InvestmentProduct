@@ -39,8 +39,8 @@ jobs:
       - name: Build
         run: cd Front && npm run build
 
-      - name: Copy index.html to 404.html for GitHub Pages routing
-        run: cp Front/dist/index.html Front/dist/404.html
+      - name: Copy Front/index.html to 404.html for GitHub Pages routing
+        run: cp Front/index.html Front/dist/404.html
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
