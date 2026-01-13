@@ -45,7 +45,16 @@
             </div>
         </div>
     </div>
-    
+
+    <div class="header" v-if="!isGameOver && currentPhase !== 'INTRO' && currentPhase !== 'USER_INFO'">
+      <div class="round-info">
+        Round {{ currentRound }} of {{ totalRounds }}
+      </div>
+      <div class="cash-info">
+        <div class="cash-text">เงินสดคงเหลือ: <span class="cash-amount">{{ formatCurrency(currentCash) }}</span> บาท</div>
+        <small class="sub-text">เพิ่ม-ลด ตามจำนวนหุ้นที่ผู้เข้าร่วมซื้อ-ขาย</small>
+      </div>
+    </div>
 
     <div v-if="!isGameOver && currentPhase === 'SITUATION'" class="situation-content fade-in">
         <h1 class="situation-header">สถานการณ์</h1>
@@ -460,7 +469,8 @@ const confirmAndNextRound = () => {
         isGameOver.value = true;
         // Batch Save on Game Over
         const endTime = new Date();
-        axios.post('http://localhost:3000/api/save-game', {
+        const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+        axios.post(`${API_URL}/api/save-game`, {
             groupName: 'Group4',
             userEmail: userEmail.value,
             rounds: gameLogs.value,
@@ -483,7 +493,8 @@ const confirmAndNextRound = () => {
 
 
 const fetchLeaderboard = () => {
-    axios.get(`http://localhost:3000/api/leaderboard/Group4`)
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+    axios.get(`${API_URL}/api/leaderboard/Group4`)
         .then(res => {
             leaderboard.value = res.data;
         })

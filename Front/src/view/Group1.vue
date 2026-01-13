@@ -394,7 +394,8 @@ const handleEndRound = () => {
         isGameOver.value = true;
         // Batch Save on Game Over
         const endTime = new Date();
-        axios.post('http://localhost:3000/api/save-game', {
+        const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+        axios.post(`${API_URL}/api/save-game`, {
             groupName: 'Group1',
             userEmail: userEmail.value,
             rounds: gameLogs.value,
@@ -415,7 +416,8 @@ const handleEndRound = () => {
 };
 
 const fetchLeaderboard = () => {
-    axios.get(`http://localhost:3000/api/leaderboard/Group1`)
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+    axios.get(`${API_URL}/api/leaderboard/Group1`)
         .then(res => {
             leaderboard.value = res.data;
         })
