@@ -19,22 +19,37 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: 'Front/package-lock.json'
 
-      - run: npm install
-      - run: npm run build
+      - name: Install dependencies
+        run: cd Front && npm install
 
-      - uses: actions/upload-pages-artifact@v3
+      - name: Build
+        run: cd Front && npm run build
+
+      - name: Copy dist/index.html to 404.html for GitHub Pages routing
+        run: cp Front/dist/index.html Front/dist/404.html
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: 'Front/dist'
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/deploy-pages@v4
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
