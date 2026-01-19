@@ -106,13 +106,16 @@
 
                 <Column header="จำนวนที่ต้องการซื้อ (ติดลบ = ขาย)" style="width: 35%">
                     <template #body="slotProps">
-                        <InputText
-                            v-model="slotProps.data.buyQty"
-                            class="w-full text-center"
+                        <InputNumber 
+                            v-model="slotProps.data.buyQty" 
+                            :min="currentRound > 1 ? -(myPortfolio[slotProps.data.symbol] || 0) : 0" 
+                            :max="100000"
                             placeholder="0"
-                            inputmode="text"
                             :disabled="isInputDisabled(slotProps.data)"
-                            @input="onQtyInput(slotProps.data)"
+                            class="w-full"
+                            inputClass="text-center"
+                            inputmode="decimal"
+                            
                         />
                     </template>
                 </Column>
@@ -456,34 +459,6 @@ const calculatePortfolioValue = () => {
     val += myPortfolio.value.TRUE * lastPrices[3];
     val += myPortfolio.value.CP * lastPrices[4];
     return val;
-};
-
-const onQtyInput = (stock) => {
-    let val = stock.buyQty?.toString() || '';
-
-    // เอาเฉพาะตัวเลขกับ -
-    val = val.replace(/[^0-9-]/g, '');
-
-    // ให้ - อยู่ได้แค่ตัวแรก
-    if (val.includes('-')) {
-        val = (val.startsWith('-') ? '-' : '') + val.replace(/-/g, '');
-    }
-
-    // แปลงเป็นตัวเลข
-    let num = parseInt(val, 10);
-    if (isNaN(num)) num = 0;
-
-    // 🔒 จำกัดค่าสูงสุด
-    if (num > 100000) num = 100000;
-
-    // 🔒 จำกัดค่าติดลบ = ขายได้ไม่เกินที่มี
-    const maxSell = myPortfolio.value[stock.symbol] || 0;
-    if (num < -maxSell) num = -maxSell;
-
-    // 🔒 รอบแรกห้ามติดลบ
-    if (currentRound.value === 1 && num < 0) num = 0;
-
-    stock.buyQty = num;
 };
 </script>
 
