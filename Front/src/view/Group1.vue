@@ -164,7 +164,7 @@
                     :label="currentRound < totalRounds ? 'ยืนยัน & ไปรอบถัดไป' : 'จบเกม & ดูผลลัพธ์'" 
                     @click="handleEndRound" 
                     class="btn-action" 
-                    :disabled="totalPurchaseThisRound > currentCash || !isDecisionMade || !canGoNext"
+                    :disabled="totalPurchaseThisRound > currentCash || !isDecisionMade"
                 />
             </div>
         </div>
@@ -205,6 +205,7 @@ import InputText from 'primevue/inputtext';
 const totalRounds = 12;
 const initialCash = 1000000;
 const maxSelection = 3;
+const MAX_QTY = 100000;
 
 const situations = [
     "ค่าเงินบาทแข็งค่าขึ้นเร็ว จากนักลงทุนต่างชาตินำเงินเข้าลงทุน",
@@ -356,15 +357,28 @@ const totalPurchaseThisRound = computed(() => {
 });
 
 const handleEndRound = () => {
-     if (!canGoNext.value) {
-        alert("❌ กรุณากรอกตัวเลขให้ถูกต้องก่อน");
-            if (totalPurchaseThisRound.value > currentCash.value || !isDecisionMade.value) return;
-            
-            currentCash.value -= totalPurchaseThisRound.value;
-            currentStocks.value.forEach(stock => {
-                if(stock.buyQty) myPortfolio.value[stock.symbol] += stock.buyQty;
-            });
+    // 🛡️ เช็คเงิน และ decision ก่อน
+    if (totalPurchaseThisRound.value > currentCash.value || !isDecisionMade.value) return;
+
+    // 🛡️ เช็ค input ทุก stock
+    const allValid = currentStocks.value.every(stock => {
+        return isValidQty(stock.buyQty);
+    });
+
+    if (!allValid) {
+        alert("❌ กรุณากรอกจำนวนหุ้นเป็นตัวเลขเท่านั้น (-100000 ถึง 100000)");
+        return;
+    }
+
+    // ✅ ผ่าน validation แล้ว → ดำเนินการต่อ
+    currentCash.value -= totalPurchaseThisRound.value;
+
+    currentStocks.value.forEach(stock => {
+        if (stock.buyQty && stock.buyQty !== 0) {
+            myPortfolio.value[stock.symbol] += stock.buyQty;
         }
+    });
+
     // --- Send Data to Backend ---
     const logData = {
         groupName: 'Group1',
@@ -375,7 +389,11 @@ const handleEndRound = () => {
         cash: currentCash.value,
         portfolio: calculatePortfolioValue(),
         totalValue: currentCash.value + calculatePortfolioValue(),
-        stocks: currentStocks.value.map(s => ({ symbol: s.symbol, buyQty: s.buyQty || 0, price: s.price }))
+        stocks: currentStocks.value.map(s => ({ 
+            symbol: s.symbol, 
+            buyQty: s.buyQty || 0, 
+            price: s.price 
+        }))
     };
 
     // Store log locally
@@ -412,8 +430,6 @@ const handleEndRound = () => {
         })
         .catch(err => console.error('Game save error:', err));
     }
-
-
 };
 
 const fetchLeaderboard = () => {
@@ -461,56 +477,62 @@ const calculatePortfolioValue = () => {
 };
 
 const onQtyInput = (stock) => {
-    let val = stock.buyQty?.toString() || '';
+    let val = stock.buyQtyText?.toString() || '';
 
-    // เอาเฉพาะตัวเลขกับ -
+    // เอาเฉพาะ 0-9 และ -
     val = val.replace(/[^0-9-]/g, '');
 
-    // ให้ - อยู่ได้แค่ตัวแรก
+    // ให้มี - ได้แค่ตัวแรก
     if (val.includes('-')) {
         val = (val.startsWith('-') ? '-' : '') + val.replace(/-/g, '');
     }
 
-    // แปลงเป็นตัวเลข
+    // ถ้าเหลือแค่ "-" ให้ยังไม่แปลงเป็น number
+    if (val === '-' || val === '') {
+        stock.buyQtyText = val;
+        stock.buyQty = NaN;
+        return;
+    }
+
     let num = parseInt(val, 10);
-    if (isNaN(num)) num = 0;
 
-    // 🔒 จำกัดค่าสูงสุด
-    if (num > 100000) num = 100000;
+    if (isNaN(num)) {
+        stock.buyQty = NaN;
+        return;
+    }
 
-    // 🔒 จำกัดค่าติดลบ = ขายได้ไม่เกินที่มี
-    const maxSell = myPortfolio.value[stock.symbol] || 0;
-    if (num < -maxSell) num = -maxSell;
-
-    // 🔒 รอบแรกห้ามติดลบ
-    if (currentRound.value === 1 && num < 0) num = 0;
+    // clamp ค่า
+    if (num > MAX_QTY) num = MAX_QTY;
+    if (num < -MAX_QTY) num = -MAX_QTY;
 
     stock.buyQty = num;
+    stock.buyQtyText = num.toString();
 };
 
+// ตรวจว่า stock นี้ valid ไหม
 const isValidQty = (val) => {
-    if (val === null || val === undefined) return false;
-
-    // ต้องเป็น number เท่านั้น
     if (typeof val !== 'number') return false;
-
-    // ห้ามเป็น NaN
     if (isNaN(val)) return false;
-
-    // ต้องเป็นจำนวนเต็ม
     if (!Number.isInteger(val)) return false;
-
+    if (val > MAX_QTY || val < -MAX_QTY) return false;
     return true;
 };
 
+// ตรวจทั้งตาราง
 const canGoNext = computed(() => {
-    if (!stocks.value || stocks.value.length === 0) return false;
-
-    return stocks.value.every(stock => {
-        return isValidQty(stock.buyQty);
-    });
+    return stocks.value.every(s => isValidQty(s));
 });
 
+// ปุ่ม Next
+const goNext = () => {
+    if (!canGoNext.value) {
+        alert("❌ กรุณากรอกตัวเลขให้ถูกต้องก่อน");
+        return;
+    }
+
+    console.log("ผ่านไปหน้าถัดไปได้", stocks.value);
+    alert("✅ ข้อมูลถูกต้อง ไปต่อได้");
+};
 
 </script>
 
