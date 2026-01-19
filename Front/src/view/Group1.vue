@@ -356,13 +356,15 @@ const totalPurchaseThisRound = computed(() => {
 });
 
 const handleEndRound = () => {
-    if (totalPurchaseThisRound.value > currentCash.value || !isDecisionMade.value) return;
-    
-    currentCash.value -= totalPurchaseThisRound.value;
-    currentStocks.value.forEach(stock => {
-        if(stock.buyQty) myPortfolio.value[stock.symbol] += stock.buyQty;
-    });
-
+     if (!canGoNext.value) {
+        alert("❌ กรุณากรอกตัวเลขให้ถูกต้องก่อน");
+            if (totalPurchaseThisRound.value > currentCash.value || !isDecisionMade.value) return;
+            
+            currentCash.value -= totalPurchaseThisRound.value;
+            currentStocks.value.forEach(stock => {
+                if(stock.buyQty) myPortfolio.value[stock.symbol] += stock.buyQty;
+            });
+        }
     // --- Send Data to Backend ---
     const logData = {
         groupName: 'Group1',
@@ -508,6 +510,7 @@ const canGoNext = computed(() => {
         return isValidQty(stock.buyQty);
     });
 });
+
 
 </script>
 
