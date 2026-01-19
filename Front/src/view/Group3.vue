@@ -117,6 +117,7 @@
                             :disabled="isInputDisabled(slotProps.data)"
                             class="w-full"
                             inputClass="text-center"
+                            inputmode="decimal"
                         />
                     </template>
                 </Column>
