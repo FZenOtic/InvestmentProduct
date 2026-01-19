@@ -114,6 +114,9 @@
                             :disabled="isInputDisabled(slotProps.data)"
                             @input="onQtyInput(slotProps.data)"
                         />
+                        <div v-if="!isValidQty(slotProps.data)" class="text-red-500 text-xs text-center">
+                            ❌ ใส่ตัวเลขระหว่าง -100000 ถึง 100000 เท่านั้น
+                        </div>
                     </template>
                 </Column>
 
@@ -164,7 +167,7 @@
                     :label="currentRound < totalRounds ? 'ยืนยัน & ไปรอบถัดไป' : 'จบเกม & ดูผลลัพธ์'" 
                     @click="handleEndRound" 
                     class="btn-action" 
-                    :disabled="totalPurchaseThisRound > currentCash || !isDecisionMade"
+                    :disabled="totalPurchaseThisRound > currentCash || !isDecisionMade || !canGoNext"
                 />
             </div>
         </div>
