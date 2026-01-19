@@ -486,6 +486,29 @@ const onQtyInput = (stock) => {
     stock.buyQty = num;
 };
 
+const isValidQty = (val) => {
+    if (val === null || val === undefined) return false;
+
+    // ต้องเป็น number เท่านั้น
+    if (typeof val !== 'number') return false;
+
+    // ห้ามเป็น NaN
+    if (isNaN(val)) return false;
+
+    // ต้องเป็นจำนวนเต็ม
+    if (!Number.isInteger(val)) return false;
+
+    return true;
+};
+
+const canGoNext = computed(() => {
+    if (!stocks.value || stocks.value.length === 0) return false;
+
+    return stocks.value.every(stock => {
+        return isValidQty(stock.buyQty);
+    });
+});
+
 </script>
 
 <style scoped>
