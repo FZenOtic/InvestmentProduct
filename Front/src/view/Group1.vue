@@ -164,7 +164,7 @@
                     :label="currentRound < totalRounds ? 'ยืนยัน & ไปรอบถัดไป' : 'จบเกม & ดูผลลัพธ์'" 
                     @click="handleEndRound" 
                     class="btn-action" 
-                    :disabled="totalPurchaseThisRound > currentCash || !isDecisionMade"
+                    :disabled="totalPurchaseThisRound > currentCash || !isDecisionMade || !canGoNext"
                 />
             </div>
         </div>
