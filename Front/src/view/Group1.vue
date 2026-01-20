@@ -106,22 +106,23 @@
 
                 <Column header="จำนวนที่ต้องการซื้อ (ติดลบ = ขาย)" style="width: 35%">
                     <template #body="slotProps">
-                        <InputNumber 
-                            v-model="slotProps.data.buyQty" 
-                            :min="currentRound > 1 ? -(myPortfolio[slotProps.data.symbol] || 0) : 0" 
-                            :max="100000"
-                            placeholder="0"
-                            :disabled="isInputDisabled(slotProps.data)"
-                            class="w-full"
-                            inputClass="text-center"
-                            
-                            showButtons
-                            buttonLayout="horizontal"
-                            decrementButtonClass="p-button-secondary"
-                            incrementButtonClass="p-button-secondary"
-                            incrementButtonIcon="pi pi-plus"
-                            decrementButtonIcon="pi pi-minus"
-                        />
+                    <InputNumber 
+                        v-model="slotProps.data.buyQty" 
+                        :min="currentRound > 1 ? -(myPortfolio[slotProps.data.symbol] || 0) : 0" 
+                        :max="100000"
+                        placeholder="0"
+                        :disabled="isInputDisabled(slotProps.data)"
+                        
+                        showButtons
+                        buttonLayout="horizontal"
+                        incrementButtonIcon="pi pi-plus"
+                        decrementButtonIcon="pi pi-minus"
+                        
+                        class="mobile-friendly-input"
+                        inputClass="text-center mobile-input-field"
+                        incrementButtonClass="p-button-info"
+                        decrementButtonClass="p-button-secondary"
+                    />
                     </template>
                 </Column>
 
@@ -912,21 +913,54 @@ const calculatePortfolioValue = () => {
     }
 }
 
-:deep(.p-inputnumber.p-button-horizontal) {
-    display: flex;
-    align-items: stretch;
-    width: 100%;
+/* Force the container to hold its shape on mobile */
+:deep(.mobile-friendly-input.p-inputnumber) {
+    display: flex !important;
+    width: 120px !important; /* Fixed width to prevent overlapping */
+    margin: 0 auto;
 }
 
+/* Ensure the middle input area is visible and readable */
+:deep(.mobile-input-field) {
+    width: 50px !important;
+    min-width: 50px !important;
+    padding: 4px !important;
+    border-radius: 0 !important;
+    font-size: 1rem;
+}
+
+/* Make buttons large enough to tap (Touch Target) */
 :deep(.p-inputnumber-button) {
-    width: 3rem !important; /* Larger hit area for fingers */
+    width: 35px !important;
+    min-width: 35px !important;
 }
 
-@media screen and (max-width: 768px) {
-    :deep(.p-inputnumber-input) {
-        width: 100% !important;
-        font-size: 1.2rem; /* Easier to read on mobile */
+/* FIX: Dark Mode visibility for Aura Theme */
+@media (prefers-color-scheme: dark) {
+    :deep(.mobile-input-field) {
+        background-color: #1a1a1a !important; /* Dark background */
+        color: #ffffff !important;           /* White text */
+        border: 1px solid #444 !important;    /* Visible border */
     }
+    
+    :deep(.p-inputnumber-button) {
+        background-color: #333 !important;
+        border-color: #444 !important;
+        color: #fff !important;
+    }
+}
+
+/* Reduce table padding for iPhone screens */
+@media screen and (max-width: 480px) {
+    :deep(.p-datatable-tbody > tr > td) {
+        padding: 8px 4px !important;
+    }
+}
+
+:deep(.pi) {
+    color: inherit !important;
+    font-size: 0.8rem;
+    font-weight: bold;
 }
 
 </style>

@@ -6,6 +6,7 @@ import PrimeVue from 'primevue/config'
 import Aura from '@primeuix/themes/aura'
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
+import 'primeicons/primeicons.css'
 
 // API configuration
 window.API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000'
