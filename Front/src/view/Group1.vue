@@ -114,8 +114,13 @@
                             :disabled="isInputDisabled(slotProps.data)"
                             class="w-full"
                             inputClass="text-center"
-                            inputmode="decimal"
                             
+                            showButtons
+                            buttonLayout="horizontal"
+                            decrementButtonClass="p-button-secondary"
+                            incrementButtonClass="p-button-secondary"
+                            incrementButtonIcon="pi pi-plus"
+                            decrementButtonIcon="pi pi-minus"
                         />
                     </template>
                 </Column>
@@ -906,4 +911,22 @@ const calculatePortfolioValue = () => {
         font-size: clamp(1rem, 3.5vw, 1.2rem) !important;
     }
 }
+
+:deep(.p-inputnumber.p-button-horizontal) {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+}
+
+:deep(.p-inputnumber-button) {
+    width: 3rem !important; /* Larger hit area for fingers */
+}
+
+@media screen and (max-width: 768px) {
+    :deep(.p-inputnumber-input) {
+        width: 100% !important;
+        font-size: 1.2rem; /* Easier to read on mobile */
+    }
+}
+
 </style>
