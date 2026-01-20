@@ -113,9 +113,16 @@
                             :max="100000"
                             placeholder="0"
                             :disabled="isInputDisabled(slotProps.data)"
-                            class="w-full"
-                            inputClass="text-center"
-                            inputmode="decimal"
+                            
+                            showButtons
+                            buttonLayout="horizontal"
+                            incrementButtonIcon="pi pi-plus"
+                            decrementButtonIcon="pi pi-minus"
+                            
+                            class="mobile-friendly-input"
+                            inputClass="text-center mobile-input-field"
+                            incrementButtonClass="p-button-info"
+                            decrementButtonClass="p-button-secondary"
                         />
                     </template>
                 </Column>
@@ -859,5 +866,55 @@ const calculatePortfolioValue = () => {
     .situation-box { min-height: 150px; padding: 20px 12px; }
     .panel { padding: 12px; }
     .btn-pink, .btn-action { padding: 14px 12px !important; font-size: clamp(1rem, 3.5vw, 1.2rem) !important; }
+}
+
+/* Force the container to hold its shape on mobile */
+:deep(.mobile-friendly-input.p-inputnumber) {
+    display: flex !important;
+    width: 120px !important; /* Fixed width to prevent overlapping */
+    margin: 0 auto;
+}
+
+/* Ensure the middle input area is visible and readable */
+:deep(.mobile-input-field) {
+    width: 50px !important;
+    min-width: 50px !important;
+    padding: 4px !important;
+    border-radius: 0 !important;
+    font-size: 1rem;
+}
+
+/* Make buttons large enough to tap (Touch Target) */
+:deep(.p-inputnumber-button) {
+    width: 35px !important;
+    min-width: 35px !important;
+}
+
+/* FIX: Dark Mode visibility for Aura Theme */
+@media (prefers-color-scheme: dark) {
+    :deep(.mobile-input-field) {
+        background-color: #1a1a1a !important; /* Dark background */
+        color: #ffffff !important;           /* White text */
+        border: 1px solid #444 !important;    /* Visible border */
+    }
+    
+    :deep(.p-inputnumber-button) {
+        background-color: #333 !important;
+        border-color: #444 !important;
+        color: #fff !important;
+    }
+}
+
+/* Reduce table padding for iPhone screens */
+@media screen and (max-width: 480px) {
+    :deep(.p-datatable-tbody > tr > td) {
+        padding: 8px 4px !important;
+    }
+}
+
+:deep(.pi) {
+    color: inherit !important;
+    font-size: 0.8rem;
+    font-weight: bold;
 }
 </style>
