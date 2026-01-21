@@ -858,34 +858,51 @@ const calculatePortfolioValue = () => {
     }
 }
 
-/* At the very end of your <style> section */
+/* At the very bottom of your <style scoped> section */
 
 .view-situation-btn {
-    margin-left: 10px !important;
+    margin-left: 15px !important;
+    vertical-align: middle;
 }
 
 .situation-popup-content {
-    padding: 15px;
+    padding: 20px;
     background: #f8f9fa;
     border-radius: 8px;
     border-left: 5px solid #3498db;
-    font-size: 1.1rem;
-    color: #333;
+    font-size: 1.2rem;
+    line-height: 1.6;
 }
 
+/* Dark Mode fixes for the Pop-up */
 @media (prefers-color-scheme: dark) {
     .situation-popup-content {
         background: #2a2a2a !important;
         color: #ffffff !important;
     }
     
-    /* Force PrimeVue Dialog to stay dark */
+    /* Target PrimeVue Dialog parts in Dark Mode */
     :deep(.p-dialog-header), 
     :deep(.p-dialog-content), 
     :deep(.p-dialog-footer) {
         background-color: #1a1a1a !important;
         color: white !important;
         border-color: #444 !important;
+    }
+    
+    .view-situation-btn {
+        border-color: #60a5fa !important;
+        color: #60a5fa !important;
+    }
+}
+
+/* Mobile adjustment for the button */
+@media screen and (max-width: 768px) {
+    .view-situation-btn {
+        margin-left: 0 !important;
+        margin-top: 10px;
+        display: block;
+        width: fit-content;
     }
 }
 </style>
