@@ -1036,4 +1036,13 @@ const calculatePortfolioValue = () => {
         width: fit-content;
     }
 }
+
+@media (prefers-color-scheme: dark) {
+    /* Keep the row text black even in dark mode when the row is green (selected) */
+    :deep(.row-active), 
+    :deep(.row-active span), 
+    :deep(.row-active div) {
+        color: #000000 !important;
+    }
+}
 </style>
