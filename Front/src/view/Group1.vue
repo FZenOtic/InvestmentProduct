@@ -995,7 +995,7 @@ const calculatePortfolioValue = () => {
 @media (prefers-color-scheme: dark) {
     /* "เงินสดคงเหลือ:" label */
     .cash-text {
-        color: #ffffff !important;
+        color: #000000 !important;
     }
 
     /* The actual number (1,000,000) */
@@ -1006,12 +1006,12 @@ const calculatePortfolioValue = () => {
 
     /* "เพิ่ม-ลด ตามจำนวนหุ้น..." sub-text */
     .sub-text {
-        color: #aaaaaa !important;
+        color: #414141 !important;
     }
     
     /* Round info text */
     .round-info {
-        color: #ffffff !important;
+        color: #000000 !important;
     }
 }
 
