@@ -46,6 +46,12 @@
     <div class="header" v-if="!isGameOver && currentPhase !== 'INTRO' && currentPhase !== 'USER_INFO'">
       <div class="round-info">
         Round {{ currentRound }} of {{ totalRounds }}
+        <Button 
+            label="ดูสถานการณ์" 
+            icon="pi pi-eye" 
+            class="p-button-outlined p-button-sm ml-2 view-situation-btn" 
+            @click="showSituationModal = true" 
+        />
       </div>
       <div class="cash-info">
         <div class="cash-text">
@@ -148,7 +154,7 @@
                 <div class="total-row">
                     ยอดซื้อรวมรอบนี้: <span class="total-amount">{{ formatNumber(totalPurchaseThisRound) }}</span> บาท
                 </div>
-
+                
                 <!-- NEW: Redecide Checkboxes -->
                 <div v-if="isRedecideMode" class="decision-section" :class="{'highlight-warning': !isDecisionMade}">
                     <hr class="divider-sm">
@@ -240,8 +246,20 @@
                 <Button label="ไปทำแบบสอบถาม" @click="goToQuestionnaire" class="p-button-success p-button-lg" style="font-weight:bold;" />
             </div>
         </div>
-    </div>
-
+    </div><Dialog 
+        v-model:visible="showSituationModal" 
+        modal 
+        header="สถานการณ์ปัจจุบัน" 
+        :style="{ width: '90vw', maxWidth: '500px' }"
+        class="custom-situation-dialog"
+    >
+        <div class="situation-popup-content">
+            <p>{{ currentSituationText }}</p>
+        </div>
+        <template #footer>
+            <Button label="ปิด" icon="pi pi-check" @click="showSituationModal = false" autofocus />
+        </template>
+    </Dialog>
   </div>
 </template>
 
@@ -254,11 +272,14 @@ import InputNumber from 'primevue/inputnumber';
 import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
 import Checkbox from 'primevue/checkbox';
+import Dialog from 'primevue/dialog';
 
 // --- Configuration ---
 const totalRounds = 12;
 const initialCash = 1000000;
 const maxSelection = 3;
+const showSituationModal = ref(false);
+
 
 const situations = [
     "ค่าเงินบาทแข็งค่าขึ้นเร็ว จากนักลงทุนต่างชาตินำเงินเข้าลงทุน",
@@ -970,4 +991,49 @@ const calculatePortfolioValue = () => {
     }
 }
 
+.view-situation-btn {
+    margin-left: 15px !important;
+    vertical-align: middle;
+}
+
+.situation-popup-content {
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 5px solid #3498db;
+    font-size: 1.2rem;
+    line-height: 1.6;
+}
+
+/* Dark Mode fixes for the Pop-up */
+@media (prefers-color-scheme: dark) {
+    .situation-popup-content {
+        background: #2a2a2a !important;
+        color: #ffffff !important;
+    }
+    
+    /* Target PrimeVue Dialog parts in Dark Mode */
+    :deep(.p-dialog-header), 
+    :deep(.p-dialog-content), 
+    :deep(.p-dialog-footer) {
+        background-color: #1a1a1a !important;
+        color: white !important;
+        border-color: #444 !important;
+    }
+    
+    .view-situation-btn {
+        border-color: #60a5fa !important;
+        color: #60a5fa !important;
+    }
+}
+
+/* Mobile adjustment for the button */
+@media screen and (max-width: 768px) {
+    .view-situation-btn {
+        margin-left: 0 !important;
+        margin-top: 10px;
+        display: block;
+        width: fit-content;
+    }
+}
 </style>

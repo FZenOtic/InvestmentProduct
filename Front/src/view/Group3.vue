@@ -49,6 +49,12 @@
     <div class="header" v-if="!isGameOver && currentPhase !== 'INTRO' && currentPhase !== 'USER_INFO'">
       <div class="round-info">
         Round {{ currentRound }} of {{ totalRounds }}
+        <Button 
+            label="ดูสถานการณ์" 
+            icon="pi pi-eye" 
+            class="p-button-outlined p-button-sm ml-2 view-situation-btn" 
+            @click="showSituationModal = true" 
+        />
       </div>
       <div class="cash-info">
         <div class="cash-text">เงินสดคงเหลือ: <span class="cash-amount">{{ formatCurrency(currentCash) }}</span> บาท</div>
@@ -216,8 +222,20 @@
                 <Button label="ไปทำแบบสอบถาม" @click="goToQuestionnaire" class="p-button-success p-button-lg" style="font-weight:bold;" />
             </div>
         </div>
-    </div>
-
+    </div><Dialog 
+        v-model:visible="showSituationModal" 
+        modal 
+        header="สถานการณ์ปัจจุบัน" 
+        :style="{ width: '90vw', maxWidth: '500px' }"
+        class="custom-situation-dialog"
+    >
+        <div class="situation-popup-content">
+            <p>{{ currentSituationText }}</p>
+        </div>
+        <template #footer>
+            <Button label="ปิด" icon="pi pi-check" @click="showSituationModal = false" autofocus />
+        </template>
+    </Dialog>
   </div>
 </template>
 
@@ -230,11 +248,13 @@ import InputNumber from 'primevue/inputnumber';
 import Button from 'primevue/button';
 import Checkbox from 'primevue/checkbox';
 import InputText from 'primevue/inputtext';
+import Dialog from 'primevue/dialog';
 
 // --- Configuration ---
 const totalRounds = 12;
 const initialCash = 1000000;
 const maxSelection = 3;
+const showSituationModal = ref(false);
 
 const situations = [
     "ค่าเงินบาทแข็งค่าขึ้นเร็ว จากนักลงทุนต่างชาตินำเงินเข้าลงทุน",
@@ -838,4 +858,34 @@ const calculatePortfolioValue = () => {
     }
 }
 
+/* At the very end of your <style> section */
+
+.view-situation-btn {
+    margin-left: 10px !important;
+}
+
+.situation-popup-content {
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 5px solid #3498db;
+    font-size: 1.1rem;
+    color: #333;
+}
+
+@media (prefers-color-scheme: dark) {
+    .situation-popup-content {
+        background: #2a2a2a !important;
+        color: #ffffff !important;
+    }
+    
+    /* Force PrimeVue Dialog to stay dark */
+    :deep(.p-dialog-header), 
+    :deep(.p-dialog-content), 
+    :deep(.p-dialog-footer) {
+        background-color: #1a1a1a !important;
+        color: white !important;
+        border-color: #444 !important;
+    }
+}
 </style>
