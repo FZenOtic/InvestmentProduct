@@ -785,4 +785,57 @@ const calculatePortfolioValue = () => {
     font-size: 0.8rem;
     font-weight: bold;
 }
+
+@media (prefers-color-scheme: dark) {
+    /* Main labels (เลือกแล้ว, ยอดซื้อรวมรอบนี้) */
+    .status-row, 
+    .total-row {
+        color: #e0e0e0 !important; /* Light gray for general text */
+    }
+
+    /* Specifically target the '0 / 3 ตัว' text */
+    .status-row span.text-blue-600 {
+        color: #60a5fa !important; /* Brighter blue for visibility */
+    }
+    
+    .status-row span.text-red-600 {
+        color: #f87171 !important; /* Brighter red for visibility */
+    }
+
+    /* The 'บาท' and 'ยอดซื้อรวม' amounts */
+    .total-amount {
+        color: #ff7675 !important; /* Soft red/pink that pops on dark backgrounds */
+    }
+
+    /* Background of the footer box itself */
+    .footer-summary {
+        background-color: #1e1e1e !important;
+        border: 1px solid #444 !important;
+    }
+}
+
+/* FIX: Header Cash Visibility in Dark Mode */
+@media (prefers-color-scheme: dark) {
+    /* "เงินสดคงเหลือ:" label */
+    .cash-text {
+        color: #000000 !important;
+    }
+
+    /* The actual number (1,000,000) */
+    .cash-amount {
+        color: #2ecc71 !important; /* Keep it green, but ensure it's a bright version */
+        text-shadow: 0px 0px 5px rgba(46, 204, 113, 0.2); /* Slight glow to help visibility */
+    }
+
+    /* "เพิ่ม-ลด ตามจำนวนหุ้น..." sub-text */
+    .sub-text {
+        color: #414141 !important;
+    }
+    
+    /* Round info text */
+    .round-info {
+        color: #000000 !important;
+    }
+}
+
 </style>
