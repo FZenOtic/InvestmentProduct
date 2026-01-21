@@ -991,4 +991,28 @@ const calculatePortfolioValue = () => {
     }
 }
 
+/* FIX: Header Cash Visibility in Dark Mode */
+@media (prefers-color-scheme: dark) {
+    /* "เงินสดคงเหลือ:" label */
+    .cash-text {
+        color: #ffffff !important;
+    }
+
+    /* The actual number (1,000,000) */
+    .cash-amount {
+        color: #2ecc71 !important; /* Keep it green, but ensure it's a bright version */
+        text-shadow: 0px 0px 5px rgba(46, 204, 113, 0.2); /* Slight glow to help visibility */
+    }
+
+    /* "เพิ่ม-ลด ตามจำนวนหุ้น..." sub-text */
+    .sub-text {
+        color: #aaaaaa !important;
+    }
+    
+    /* Round info text */
+    .round-info {
+        color: #ffffff !important;
+    }
+}
+
 </style>
