@@ -963,4 +963,32 @@ const calculatePortfolioValue = () => {
     font-weight: bold;
 }
 
+@media (prefers-color-scheme: dark) {
+    /* Main labels (เลือกแล้ว, ยอดซื้อรวมรอบนี้) */
+    .status-row, 
+    .total-row {
+        color: #e0e0e0 !important; /* Light gray for general text */
+    }
+
+    /* Specifically target the '0 / 3 ตัว' text */
+    .status-row span.text-blue-600 {
+        color: #60a5fa !important; /* Brighter blue for visibility */
+    }
+    
+    .status-row span.text-red-600 {
+        color: #f87171 !important; /* Brighter red for visibility */
+    }
+
+    /* The 'บาท' and 'ยอดซื้อรวม' amounts */
+    .total-amount {
+        color: #ff7675 !important; /* Soft red/pink that pops on dark backgrounds */
+    }
+
+    /* Background of the footer box itself */
+    .footer-summary {
+        background-color: #1e1e1e !important;
+        border: 1px solid #444 !important;
+    }
+}
+
 </style>
